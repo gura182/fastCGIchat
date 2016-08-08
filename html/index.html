@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mini Chat fastCGI</title>
+</head>
+<body>
+	<h2>Mini Chat fastCGI</h2>
+
+	<div>Mensaje (80 caracteres max.):<br>
+	<input type="text" id="data1" size="60" maxlength="80"
+	       onkeydown = "if (event.keyCode == 13)
+	       document.getElementById('sendButton').click()">
+	<button id="sendButton"type="button" onclick="sendMsg()">Enviar</button></div>
+	<p id="chatout">----------------------------------------------------------------------------------------------</p>
+
+
+<script>
+
+var myTimer;
+
+myTimer = setInterval(recvMsg, 1000);
+
+
+function sendMsg() {
+  var xhttp = new XMLHttpRequest();
+  
+  xhttp.onreadystatechange = function() {
+    if ( xhttp.readyState == 4 && xhttp.status == 200 )
+    { 
+      var chatmsg = document.getElementById("chatout"); 
+      chatmsg.innerHTML = xhttp.responseText + chatmsg.innerHTML 
+    }
+  };
+  
+  xhttp.open( "POST", "fcgi_chat.fcgi", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send("msg=" + document.getElementById("data1").value + "\n");
+   
+  document.getElementById("data1").value = '';
+}
+
+
+function recvMsg() {
+  var xhttp = new XMLHttpRequest();
+  
+  xhttp.onreadystatechange = function() {
+    if ( xhttp.readyState == 4 && xhttp.status == 200 )
+    { 
+      var chatmsg = document.getElementById("chatout"); 
+      chatmsg.innerHTML = xhttp.responseText + chatmsg.innerHTML 
+    }
+  };
+  
+  xhttp.open( "POST", "fcgi_chat.fcgi", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send("msg=\n"); // Para ver si hay que traer un mensaje no envio nada
+}
+
+
+</script>
+
+
+</body>
+</html>
